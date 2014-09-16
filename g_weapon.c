@@ -470,31 +470,54 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 	vec3_t	dir;
 	vec3_t	forward, right, up;
 
-	vectoangles (aimdir, dir);
-	AngleVectors (dir, forward, right, up);
+	int i;
+	int j;
+	int k;
 
-	grenade = G_Spawn();
-	VectorCopy (start, grenade->s.origin);
-	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
-	VectorSet (grenade->avelocity, 300, 300, 300);
-	grenade->movetype = MOVETYPE_BOUNCE;
-	grenade->clipmask = MASK_SHOT;
-	grenade->solid = SOLID_BBOX;
-	grenade->s.effects |= EF_GRENADE;
-	VectorClear (grenade->mins);
-	VectorClear (grenade->maxs);
-	grenade->s.modelindex = gi.modelindex ("models/objects/grenade/tris.md2");
-	grenade->owner = self;
-	grenade->touch = Grenade_Touch;
-	grenade->nextthink = level.time + timer;
-	grenade->think = Grenade_Explode;
-	grenade->dmg = damage;
-	grenade->dmg_radius = damage_radius;
-	grenade->classname = "grenade";
+	
+	
+	for(i=0;i<4;i++)
+	{
+		
+		
+		if(i==1)
+		{
+			for(j=0;j<2;j++)
+				start[j]=start[j]+100;
+		}
+		else if(k==2)
+		{
+			for(k=0;k<2;k++)
+				start[k]=start[k]-200;
+		}
+		
+		vectoangles (aimdir, dir);
+		AngleVectors (dir, forward, right, up);
 
-	gi.linkentity (grenade);
+		
+		grenade = G_Spawn();
+		VectorCopy (start, grenade->s.origin);
+		VectorScale (aimdir, speed, grenade->velocity);
+		VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
+		VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+		VectorSet (grenade->avelocity, 300, 300, 300);
+		grenade->movetype = MOVETYPE_BOUNCE;
+		grenade->clipmask = MASK_SHOT;
+		grenade->solid = SOLID_BBOX;
+		grenade->s.effects |= EF_GRENADE;
+		VectorClear (grenade->mins);
+		VectorClear (grenade->maxs);
+		grenade->s.modelindex = gi.modelindex ("models/objects/grenade/tris.md2");
+		grenade->owner = self;
+		grenade->touch = Grenade_Touch;
+		//grenade->nextthink = level.time + timer;
+		//grenade->think = Grenade_Explode;------------------------------------------------------------->
+		grenade->dmg = damage;
+		grenade->dmg_radius = damage_radius;
+		grenade->classname = "grenade";
+
+		gi.linkentity (grenade);
+	}
 }
 
 void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held)
@@ -502,42 +525,64 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	edict_t	*grenade;
 	vec3_t	dir;
 	vec3_t	forward, right, up;
+	int i;
+	int j;
+	int k;
 
-	vectoangles (aimdir, dir);
-	AngleVectors (dir, forward, right, up);
-
-	grenade = G_Spawn();
-	VectorCopy (start, grenade->s.origin);
-	VectorScale (aimdir, speed, grenade->velocity);
-	VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
-	VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
-	VectorSet (grenade->avelocity, 300, 300, 300);
-	grenade->movetype = MOVETYPE_BOUNCE;
-	grenade->clipmask = MASK_SHOT;
-	grenade->solid = SOLID_BBOX;
-	grenade->s.effects |= EF_GRENADE;
-	VectorClear (grenade->mins);
-	VectorClear (grenade->maxs);
-	grenade->s.modelindex = gi.modelindex ("models/objects/grenade2/tris.md2");
-	grenade->owner = self;
-	grenade->touch = Grenade_Touch;
-	grenade->nextthink = level.time + timer;
-	grenade->think = Grenade_Explode;
-	grenade->dmg = damage;
-	grenade->dmg_radius = damage_radius;
-	grenade->classname = "hgrenade";
-	if (held)
-		grenade->spawnflags = 3;
-	else
-		grenade->spawnflags = 1;
-	grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");
-
-	if (timer <= 0.0)
-		Grenade_Explode (grenade);
-	else
+	
+	
+	for(i=0;i<4;i++)
 	{
-		gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
-		gi.linkentity (grenade);
+		
+		if(i==1)
+		{
+			for(j=0;j<2;j++)
+				start[j]=start[j]+100;
+		}
+		else if(k==2)
+		{
+			for(k=0;k<2;k++)
+				start[k]=start[k]-200;
+
+		}
+		
+		vectoangles (aimdir, dir);
+		AngleVectors (dir, forward, right, up);
+
+		
+		grenade = G_Spawn();
+		VectorCopy (start, grenade->s.origin);
+		VectorScale (aimdir, speed, grenade->velocity);
+		VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
+		VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+		VectorSet (grenade->avelocity, 300, 300, 300);
+		grenade->movetype = MOVETYPE_BOUNCE;
+		grenade->clipmask = MASK_SHOT;
+		grenade->solid = SOLID_BBOX;
+		grenade->s.effects |= EF_GRENADE;
+		VectorClear (grenade->mins);
+		VectorClear (grenade->maxs);
+		grenade->s.modelindex = gi.modelindex ("models/objects/grenade2/tris.md2");
+		grenade->owner = self;
+		grenade->touch = Grenade_Touch;
+		//grenade->nextthink = level.time + timer;
+		//grenade->think = Grenade_Explode;
+		grenade->dmg = damage;
+		grenade->dmg_radius = damage_radius;
+		grenade->classname = "hgrenade";
+		if (held)
+			grenade->spawnflags = 3;
+		else
+			grenade->spawnflags = 1;
+		//grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");
+
+		if (timer <= 0.0)
+			Grenade_Explode (grenade);
+		else
+		{
+			gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
+			gi.linkentity (grenade);
+		}
 	}
 }
 
