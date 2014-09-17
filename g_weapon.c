@@ -476,20 +476,37 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 
 	
 	
-	for(i=0;i<4;i++)
-	{
+	
+	//for(i=0;i<1;i++)
+	//{
 		
-		
-		if(i==1)
+		/*
+		if(i==0)
 		{
-			for(j=0;j<2;j++)
-				start[j]=start[j]+100;
+			
+			start[0]=start[0]+100;
+			//dir[0]=dir[0]+50;
+		}
+		else if(k==1)
+		{
+			
+			start[0]=start[0]+100;
+			//dir[0]=dir[0]-50;
 		}
 		else if(k==2)
 		{
-			for(k=0;k<2;k++)
-				start[k]=start[k]-200;
+			
+			start[0]=start[0]-300;
+			//dir[1]=dir[1]+50;
+		}	
+		else if(k==3)
+		{
+			
+			start[0]=start[0]-100;
+			//dir[1]=dir[1]-50;
 		}
+		*/
+
 		
 		vectoangles (aimdir, dir);
 		AngleVectors (dir, forward, right, up);
@@ -501,6 +518,7 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 		VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
 		VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
 		VectorSet (grenade->avelocity, 300, 300, 300);
+		
 		grenade->movetype = MOVETYPE_BOUNCE;
 		grenade->clipmask = MASK_SHOT;
 		grenade->solid = SOLID_BBOX;
@@ -517,7 +535,8 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 		grenade->classname = "grenade";
 
 		gi.linkentity (grenade);
-	}
+	//}
+	
 }
 
 void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held)
@@ -529,22 +548,36 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	int j;
 	int k;
 
+
 	
-	
-	for(i=0;i<4;i++)
-	{
-		
-		if(i==1)
+	//for(i=0;i<1;i++)
+	//{
+		/*
+		if(i==0)
 		{
-			for(j=0;j<2;j++)
-				start[j]=start[j]+100;
+			
+			start[0]=start[0]+100;
+			//dir[0]=dir[0]+50;
+		}
+		else if(k==1)
+		{
+			
+			start[0]=start[0]+100;
+			//dir[0]=dir[0]-50;
 		}
 		else if(k==2)
 		{
-			for(k=0;k<2;k++)
-				start[k]=start[k]-200;
-
+			
+			start[0]=start[0]-300;
+			//dir[1]=dir[1]+50;
+		}	
+		else if(k==3)
+		{
+			
+			start[0]=start[0]-100;
+			//dir[1]=dir[1]-50;
 		}
+		*/
 		
 		vectoangles (aimdir, dir);
 		AngleVectors (dir, forward, right, up);
@@ -555,6 +588,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 		VectorScale (aimdir, speed, grenade->velocity);
 		VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
 		VectorMA (grenade->velocity, crandom() * 10.0, right, grenade->velocity);
+		
 		VectorSet (grenade->avelocity, 300, 300, 300);
 		grenade->movetype = MOVETYPE_BOUNCE;
 		grenade->clipmask = MASK_SHOT;
@@ -574,7 +608,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 			grenade->spawnflags = 3;
 		else
 			grenade->spawnflags = 1;
-		//grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");
+		//grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");--------------------------> get rid of timer sound
 
 		if (timer <= 0.0)
 			Grenade_Explode (grenade);
@@ -583,7 +617,8 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 			gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
 			gi.linkentity (grenade);
 		}
-	}
+	//}
+	
 }
 
 

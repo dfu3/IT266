@@ -533,21 +533,36 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 	float	timer;
 	int		speed;
 	float	radius;
+	int i;
 
 	radius = damage+40;
 	if (is_quad)
 		damage *= 4;
 
-	VectorSet(offset, 8, 8, ent->viewheight-8);
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	for(i=0;i<4;i++)
+	{
 
-	timer = ent->client->grenade_time - level.time;
-	//speed = GRENADE_MINSPEED + (GRENADE_TIMER - timer) * ((GRENADE_MAXSPEED - GRENADE_MINSPEED) / GRENADE_TIMER);-------------->mod
-	speed=10000;
+		if(i==0)
+			VectorSet(offset, 8,-20, ent->viewheight-8);
+		else if(i==0)
+			VectorSet(offset, 8,15, ent->viewheight-8);
+		else if(i==2)
+			VectorSet(offset, 8,-10, ent->viewheight-8);
+		else if(i==3)
+			VectorSet(offset, 8,10, ent->viewheight-8);
 
-	fire_grenade2 (ent, start, forward, damage, speed, timer, radius, held);
-	
+		//VectorSet(offset, 8, 8, ent->viewheight-8);
+
+
+		AngleVectors (ent->client->v_angle, forward, right, NULL);
+		P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+
+		timer = ent->client->grenade_time - level.time;
+		//speed = GRENADE_MINSPEED + (GRENADE_TIMER - timer) * ((GRENADE_MAXSPEED - GRENADE_MINSPEED) / GRENADE_TIMER);-------------->mod
+		speed=7000;
+
+		fire_grenade2 (ent, start, forward, damage, speed, timer, radius, held);
+	}
 
 	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
 		ent->client->pers.inventory[ent->client->ammo_index]--;
@@ -574,6 +589,7 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 		ent->s.frame = FRAME_wave08;
 		ent->client->anim_end = FRAME_wave01;
 	}
+	
 }
 
 void Weapon_Grenade (edict_t *ent)
@@ -692,24 +708,42 @@ GRENADE LAUNCHER
 
 void weapon_grenadelauncher_fire (edict_t *ent)
 {
-	vec3_t	offset;
-	vec3_t	forward, right;
-	vec3_t	start;
-	int		damage = 120;
-	float	radius;
+		vec3_t	offset;
+		vec3_t	forward, right;
+		vec3_t	start;
+		int		damage = 120;
+		float	radius;
+		int i;
 
-	radius = damage+40;
-	if (is_quad)
-		damage *= 4;
+		radius = damage+40;
+		if (is_quad)
+			damage *= 4;
 
-	VectorSet(offset, 8, 8, ent->viewheight-8);
-	AngleVectors (ent->client->v_angle, forward, right, NULL);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+	for(i=0;i<4;i++)
+	{
+		if(i==0)
+			VectorSet(offset, 8,-20, ent->viewheight-8);
+		else if(i==0)
+			VectorSet(offset, 8,15, ent->viewheight-8);
+		else if(i==2)
+			VectorSet(offset, 8,-10, ent->viewheight-8);
+		else if(i==3)
+			VectorSet(offset, 8,10, ent->viewheight-8);
 
-	VectorScale (forward, -2, ent->client->kick_origin);
-	ent->client->kick_angles[0] = -1;
+		//VectorSet(offset, 8, 8, ent->viewheight-8);
 
-	fire_grenade (ent, start, forward, damage,10000, 2.5, radius);//-------------------------------------------------------->mod
+		//----------------------------------------------------------------------angle mod
+		AngleVectors (ent->client->v_angle, forward, right, NULL);
+	
+	
+		P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
+
+		VectorScale (forward, -2, ent->client->kick_origin);
+		ent->client->kick_angles[0] = -1;
+
+		fire_grenade (ent, start, forward, damage,7000, 2.5, radius);//-------------------------------------------------------->mod
+
+	}
 
 	gi.WriteByte (svc_muzzleflash);
 	gi.WriteShort (ent-g_edicts);
@@ -722,6 +756,7 @@ void weapon_grenadelauncher_fire (edict_t *ent)
 
 	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
 		ent->client->pers.inventory[ent->client->ammo_index]--;
+	
 }
 
 void Weapon_GrenadeLauncher (edict_t *ent)
