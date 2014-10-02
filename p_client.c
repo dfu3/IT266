@@ -1735,6 +1735,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 }
 
 
+//gi.centerprintf(     ------------------------------------------------------------------------------------------------------<
+
 /*
 ==============
 ClientBeginServerFrame
