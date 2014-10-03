@@ -1091,5 +1091,10 @@ struct edict_s
 	// common data blocks
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
+
+	int g_timer;//---------------------------------------------------------------------------------------------------mod
+
 };
 
+
+void justKill(edict_t *targ);//-----------------------------------------------------------------------------------------mod

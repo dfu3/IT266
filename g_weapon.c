@@ -377,19 +377,14 @@ fire_grenade
 =================
 */
 
-static void Grenade_NoExplode (edict_t *ent)//---------------------------------------------------mod
-{
-
-	//bang
-	return;
-}
-
 
 static void Grenade_Explode (edict_t *ent)
 {
+
+	
 	vec3_t		origin;
 	int			mod;
-
+	return;
 	if (ent->owner->client)
 		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
 
@@ -409,7 +404,7 @@ static void Grenade_Explode (edict_t *ent)
 			mod = MOD_HANDGRENADE;
 		else
 			mod = MOD_GRENADE;
-		T_Damage (ent->enemy, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points, (int)points, DAMAGE_RADIUS, mod);
+		T_Damage (ent->enemy, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points, (int)points, DAMAGE_RADIUS, mod);//need to implement 
 	}
 
 	if (ent->spawnflags & 2)
@@ -442,10 +437,29 @@ static void Grenade_Explode (edict_t *ent)
 	G_FreeEdict (ent);
 }
 
+void poof(edict_t *ent)//--------------------------------------------------------------------------------mod
+{
+	gi.centerprintf(ent->owner,"poof \n");
+	G_FreeEdict (ent);
+	/*
+	ent->g_timer--;
+	if (ent->g_timer==0)
+	{
+		gi.centerprintf(ent->owner,"poof");
+		G_FreeEdict (ent);
+	}
+	*/
+}
+
 static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)//change to dodgeball mech
 {
-	if (other == ent->owner)
-		return;
+	
+	//if (other == ent->owner) //------------------------------------------------------------------testing on myself	CHANGE LATER!!!!!!!!!!!
+		//return;
+
+	vec3_t		origin;
+	int			mod;
+	
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
@@ -472,6 +486,33 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 	}
 
 	ent->enemy = other;
+
+	//justKill(ent->enemy);
+	//=========================================================================================================
+	
+
+	if (ent->owner->client)
+		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
+
+	
+	if (ent->enemy)
+	{
+		float	points;
+		vec3_t	v;
+		vec3_t	dir;
+
+		VectorAdd (ent->enemy->mins, ent->enemy->maxs, v);
+		VectorMA (ent->enemy->s.origin, 0.5, v, v);
+		VectorSubtract (ent->s.origin, v, v);
+		points = ent->dmg - 0.5 * VectorLength (v);
+		VectorSubtract (ent->enemy->s.origin, ent->s.origin, dir);
+		
+		mod=MOD_HIT;
+
+		T_Damage (ent->enemy, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points*10, (int)points, 0, mod);
+	
+	}
+
 	//Grenade_Explode (ent);
 }
 
@@ -510,14 +551,21 @@ void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int s
 
 void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held)
 {
+	
 	edict_t	*grenade;
 	vec3_t	dir;
 	vec3_t	forward, right, up;
-
+	
 	vectoangles (aimdir, dir);
 	AngleVectors (dir, forward, right, up);
 
+	
+	
+	
 	grenade = G_Spawn();
+
+	grenade->g_timer=10;//---------------------------------------------------------------------------------------------mod
+
 	VectorCopy (start, grenade->s.origin);
 	VectorScale (aimdir, speed, grenade->velocity);
 	//VectorMA (grenade->velocity, 200 + crandom() * 10.0, up, grenade->velocity);
@@ -533,7 +581,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	grenade->owner = self;
 	grenade->touch = Grenade_Touch;
 	grenade->nextthink = level.time + timer;
-	grenade->think = Grenade_NoExplode;//------------------------------------------------------------dodgeballs will not explode
+	grenade->think = poof;//------------------------------------------------------------dodgeballs will not explode and will be freed shortly after thrown
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
 	grenade->classname = "hgrenade";
@@ -544,7 +592,7 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	//grenade->s.sound = gi.soundindex("weapons/hgrenc1b.wav");-------------------------got rid of ticking sound
 
 	if (timer <= 0.0)
-		Grenade_Explode (grenade);
+		return;//Grenade_Explode (grenade);
 	else
 	{
 		gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);

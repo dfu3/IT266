@@ -821,7 +821,7 @@ static void drop_make_touchable (edict_t *ent)
 	}
 }
 
-edict_t *Drop_Item (edict_t *ent, gitem_t *item)//------------------------------use this to spawn new grenade
+edict_t *Drop_Item (edict_t *ent, gitem_t *item)//------------------------------------------------------------------use this to spawn new grenade
 {
 	edict_t	*dropped;
 	vec3_t	forward, right;
