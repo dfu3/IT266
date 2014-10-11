@@ -522,7 +522,7 @@ GRENADE
 
 #define GRENADE_TIMER		3.0
 #define GRENADE_MINSPEED	400
-#define GRENADE_MAXSPEED	1500
+#define GRENADE_MAXSPEED	15000
 
 void weapon_grenade_fire (edict_t *ent, qboolean held)
 {
@@ -544,8 +544,16 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 
 	timer = ent->client->grenade_time - level.time;
 	//speed = GRENADE_MINSPEED + (GRENADE_TIMER - timer) * ((GRENADE_MAXSPEED - GRENADE_MINSPEED) / GRENADE_TIMER);
-	speed=1500;
-	fire_grenade2 (ent, start, forward, damage, speed, timer, radius, held);
+	
+	if(IS_SET(ent->flags,FL_POWER_THROW))
+		speed=5000;
+	else
+		speed=1000;
+	
+	if(IS_SET(ent->flags,FL_MOON_JUMP) || IS_SET(ent->flags,FL_CATCHING) )//----------------will not throw if catching or moon jumping
+		return;
+	else
+		fire_grenade2 (ent, start, forward, damage, speed, timer, radius, held);
 
 	if (! ( (int)dmflags->value & DF_INFINITE_AMMO ) )
 		ent->client->pers.inventory[ent->client->ammo_index]--;

@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+#include "time.h"
 
 
 char *ClientTeam (edict_t *ent)
@@ -879,6 +880,61 @@ void Cmd_PlayerList_f(edict_t *ent)
 	}
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
+//player abilites===========================================
+void Cmd_ToThrow_f(edict_t *ent)
+{
+	TO_REMOVE(ent->flags,FL_GRENADE_FLY);
+	
+}
+void Cmd_ToToss_f(edict_t *ent)
+{
+	TO_SET(ent->flags,FL_GRENADE_FLY);
+}
+//-------------------------------------------------
+void Cmd_SteadyThrow_f(edict_t *ent)
+{
+	TO_REMOVE(ent->flags,FL_POWER_THROW);
+	
+}
+void Cmd_PowerThrow_f(edict_t *ent)
+{
+	TO_SET(ent->flags,FL_POWER_THROW);
+}
+//-------------------------------------------------
+void Cmd_MoonJump_f(edict_t *ent)
+{
+	TO_SET(ent->flags,FL_MOON_JUMP);
+}
+void Cmd_WalkMode_f(edict_t *ent)
+{
+	TO_REMOVE(ent->flags,FL_MOON_JUMP);
+}
+//------------------------------------------------
+void Cmd_ThrowMut_f(edict_t *ent)
+{
+	TO_SET(ent->flags,FL_THROW_MUT);
+	TO_REMOVE(ent->flags,FL_THROW_SOLD);
+}
+void Cmd_ThrowSold_f(edict_t *ent)
+{
+	TO_SET(ent->flags,FL_THROW_SOLD);
+	TO_REMOVE(ent->flags,FL_THROW_MUT);
+}
+void Cmd_ThrowBall_f(edict_t *ent)
+{
+	TO_REMOVE(ent->flags,FL_THROW_SOLD);
+	TO_REMOVE(ent->flags,FL_THROW_MUT);
+}
+//------------------------------------------------
+
+void Cmd_CatchBall_f(edict_t *ent)
+{
+	
+	TO_SET(ent->flags,FL_TAKE_STAMP);
+	TO_SET(ent->flags,FL_STAMP_BS);
+}
+
+
 
 
 /*
@@ -968,6 +1024,26 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave_f (ent);
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
+	else if (Q_stricmp(cmd, "line") == 0)
+		Cmd_ToThrow_f(ent);
+	else if (Q_stricmp(cmd, "arc") == 0)
+		Cmd_ToToss_f(ent);
+	else if (Q_stricmp(cmd, "power") == 0)
+		Cmd_PowerThrow_f(ent);
+	else if (Q_stricmp(cmd, "steady") == 0)
+		Cmd_SteadyThrow_f(ent);
+	else if (Q_stricmp(cmd, "moon") == 0)
+		Cmd_MoonJump_f(ent);
+	else if (Q_stricmp(cmd, "walk") == 0)
+		Cmd_WalkMode_f(ent);
+	else if (Q_stricmp(cmd, "mut") == 0)
+		Cmd_ThrowMut_f(ent);
+	else if (Q_stricmp(cmd, "sold") == 0)
+		Cmd_ThrowSold_f(ent);
+	else if (Q_stricmp(cmd, "ball") == 0)
+		Cmd_ThrowBall_f(ent);
+	else if (Q_stricmp(cmd, "catch") == 0)
+		Cmd_CatchBall_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

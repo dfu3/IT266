@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+#include <time.h>
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
@@ -603,7 +604,7 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_bullets	= 200;
 	client->pers.max_shells		= 100;
 	client->pers.max_rockets	= 50;
-	client->pers.max_grenades	= 10;//--------------------------------------------------------------------------------mod
+	client->pers.max_grenades	= 2;//--------------------------------------------------------------------------------mod
 	client->pers.max_cells		= 200;
 	client->pers.max_slugs		= 50;
 
@@ -1564,6 +1565,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+	time_t now;
+	time_t later;
+	double seconds;
+	//int timer;
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1601,6 +1606,14 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			client->ps.pmove.pm_type = PM_NORMAL;
 
 		client->ps.pmove.gravity = sv_gravity->value;
+
+		//------------------------------------------------------------------------------------------------moon jump
+		if(IS_SET(ent->flags,FL_MOON_JUMP))
+			client->ps.pmove.gravity = sv_gravity->value * 0.25;
+		else
+			client->ps.pmove.gravity = sv_gravity->value * 1.25;
+
+
 		pm.s = client->ps.pmove;
 
 		for (i=0 ; i<3 ; i++)
@@ -1727,15 +1740,107 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	}
 
 	// update chase cam if being followed
-	for (i = 1; i <= maxclients->value; i++) {
+	for (i = 1; i <= maxclients->value; i++) 
+	{
 		other = g_edicts + i;
 		if (other->inuse && other->client->chase_target == ent)
 			UpdateChaseCam(other);
+		
+	}
 
-	//-------------------------------------------------------------------------------------------------------loop through entities
+	/*
+	
+	if(IS_SET(ent->flags,FL_TAKE_STAMP))
+	{
+		time(&now);
+		//seconds = 0;
+		
+		while (seconds < 1000000000)
+		{
+			seconds++;
+		}
+
+		
+		TO_REMOVE(ent->flags,FL_TAKE_STAMP);
+		//TO_REMOVE(ent->flags,FL_CATCHING);
+	}
 	
 
+	seconds = 5;
+	
+	
+	if(IS_SET(ent->flags,FL_STAMP_BS))
+	{
+		//gi.centerprintf((difftime(time(&later),now)));
+
+		
+		if ((difftime(time(&later),now)) <= seconds)
+		{
+			TO_SET(ent->flags,FL_CATCHING);
+			TO_SET(ent->flags,FL_STAMP_BS);
+			gi.centerprintf(ent,"catch on");
+		}
+		if ((difftime(time(&later),now)) > seconds)
+		{
+			TO_REMOVE(ent->flags,FL_CATCHING);
+		    TO_REMOVE(ent->flags,FL_STAMP_BS);
+			gi.centerprintf(ent,"catch off");
+		}
+		
 	}
+	*/
+	
+	//-------------------------------------------------------------
+
+	
+	if(IS_SET(ent->flags,FL_STAMP_BS))
+	{
+		client->timer=0;
+		TO_REMOVE(ent->flags,FL_STAMP_BS);
+		gi.centerprintf(ent,"catch set");
+	}
+	
+	else if(client->timer>=75)
+	{
+		//timer=0;
+		TO_REMOVE(ent->flags,FL_CATCHING);
+		TO_REMOVE(ent->flags,FL_TAKE_STAMP);
+		gi.centerprintf(ent,"catch off");
+	}
+	else if (IS_SET(ent->flags,FL_TAKE_STAMP))
+	{
+		client->timer++;
+		TO_SET(ent->flags,FL_CATCHING);
+		gi.centerprintf(ent,"catch on");
+	}
+	
+	//---------------------------------------------------------------
+	
+
+	/*
+	if ((difftime(time(&later),now)) <= seconds)
+	{
+		TO_SET(ent->flags,FL_CATCHING);
+		gi.centerprintf(ent,"catch on");
+	}
+	if ((difftime(time(&later),now)) > seconds)
+	{
+		TO_REMOVE(ent->flags,FL_CATCHING);
+		gi.centerprintf(ent,"catch off");
+	}	
+	*/
+
+	/*
+	if(IS_SET(ent->flags,FL_BUFFER));
+	{
+		TO_REMOVE(ent->flags,FL_CATCHING);
+		TO_REMOVE(ent->flags,FL_BUFFER);
+	}
+	
+	if( ! (IS_SET(ent->flags,FL_BUFFER))  )
+		TO_SET(ent->flags,FL_BUFFER);
+	*/
+
 }
 
 

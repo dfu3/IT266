@@ -48,8 +48,19 @@
 #define	FL_TEAMSLAVE			0x00000400	// not the first on the team
 #define FL_NO_KNOCKBACK			0x00000800
 #define FL_POWER_ARMOR			0x00001000	// power armor (if any) is active
+#define FL_GRENADE_FLY			0x00002000
+#define FL_POWER_THROW			0x00004000
+#define FL_MOON_JUMP			0x00008000
+#define FL_THROW_SOLD			0x00010000
+#define FL_THROW_MUT			0x00020000
+#define FL_CATCHING				0x00040000
+#define FL_TAKE_STAMP			0x00080000
+#define FL_STAMP_BS				0x00100000
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
+#define IS_SET(a,b) (a & b)
+#define TO_SET(a,b) (a |= b)
+#define TO_REMOVE(a,b) (a &= ~b)
 
 #define	FRAMETIME		0.1
 
@@ -941,6 +952,10 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+	
+
+	int			timer;
+
 };
 
 
@@ -991,6 +1006,7 @@ struct edict_s
 	int			spawnflags;
 
 	float		timestamp;
+	
 
 	float		angle;			// set in qe3, -1 = up, -2 = down
 	char		*target;
@@ -1093,8 +1109,9 @@ struct edict_s
 	monsterinfo_t	monsterinfo;
 
 	int g_timer;//---------------------------------------------------------------------------------------------------mod
+	int hitMapFirst;
 
 };
 
 
-void justKill(edict_t *targ);//-----------------------------------------------------------------------------------------mod
+
