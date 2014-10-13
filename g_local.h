@@ -834,6 +834,9 @@ typedef struct
 	int			max_health;
 	int			savedFlags;
 
+	int			playerID;
+	int			playerTeam;
+
 	int			selected_item;
 	int			inventory[MAX_ITEMS];
 

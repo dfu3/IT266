@@ -608,6 +608,111 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_cells		= 200;
 	client->pers.max_slugs		= 50;
 
+	/*
+	if( (client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0) ) 
+	{
+		client->pers.player1=1;
+		client->pers.player2=0;
+		client->pers.player3=0;
+		client->pers.player4=0;
+		client->pers.player5=0;
+		client->pers.player6=0;
+		client->pers.player7=0;
+		client->pers.player8=0;
+		
+	}
+	else if(	(client->pers.player1==1) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=1;
+		client->pers.player3=0;
+		client->pers.player4=0;
+		client->pers.player5=0;
+		client->pers.player6=0;
+		client->pers.player7=0;
+		client->pers.player8=0;
+
+	}
+	else if(	(client->pers.player1==0) && (client->pers.player2==1) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=0;
+		client->pers.player3=1;
+		client->pers.player4=0;
+		client->pers.player5=0;
+		client->pers.player6=0;
+		client->pers.player7=0;
+		client->pers.player8=0;
+
+	}
+	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==1) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=0;
+		client->pers.player3=0;
+		client->pers.player4=1;
+		client->pers.player5=0;
+		client->pers.player6=0;
+		client->pers.player7=0;
+		client->pers.player8=0;
+
+	}
+	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==1) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=0;
+		client->pers.player3=0;
+		client->pers.player4=0;
+		client->pers.player5=1;
+		client->pers.player6=0;
+		client->pers.player7=0;
+		client->pers.player8=0;
+
+	}
+	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==1) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=0;
+		client->pers.player3=0;
+		client->pers.player4=0;
+		client->pers.player5=0;
+		client->pers.player6=1;
+		client->pers.player7=0;
+		client->pers.player8=0;
+
+	}
+	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==1) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=0;
+		client->pers.player3=0;
+		client->pers.player4=0;
+		client->pers.player5=0;
+		client->pers.player6=0;
+		client->pers.player7=1;
+		client->pers.player8=0;
+
+	}
+	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==1)	&& (client->pers.player8==0)	)
+	{
+		client->pers.player1=0;
+		client->pers.player2=0;
+		client->pers.player3=0;
+		client->pers.player4=0;
+		client->pers.player5=0;
+		client->pers.player6=0;
+		client->pers.player7=0;
+		client->pers.player8=1;
+
+	}
+	*/
+
+
+
+	//client->pers.playerID++;
+
+	 
+
 	client->pers.connected = true;
 }
 
@@ -1237,6 +1342,7 @@ void PutClientInServer (edict_t *ent)
 	// force the current weapon up
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
+	
 }
 
 /*
@@ -1250,6 +1356,9 @@ deathmatch mode, so clear everything out before starting them.
 void ClientBeginDeathmatch (edict_t *ent)
 {
 	G_InitEdict (ent);
+
+	ent->client->pers.playerID=0;
+	ent->client->pers.playerTeam=0;
 
 	InitClientResp (ent->client);
 
@@ -1791,7 +1900,16 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	*/
 	
 	//-------------------------------------------------------------
-
+	/*
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player1);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player2);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player3);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player4);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player5);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player6);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player7);
+	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player8);
+	*/
 	
 	if(IS_SET(ent->flags,FL_STAMP_BS))
 	{

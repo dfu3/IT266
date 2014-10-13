@@ -933,6 +933,75 @@ void Cmd_CatchBall_f(edict_t *ent)
 	TO_SET(ent->flags,FL_TAKE_STAMP);
 	TO_SET(ent->flags,FL_STAMP_BS);
 }
+//------------------------------------------------
+void Cmd_InitPlayer1_f(edict_t *ent)
+{
+	ent->client->pers.playerID=1;
+	//gi.centerprintf(ent,"\n  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer2_f(edict_t *ent)
+{
+	ent->client->pers.playerID=2;
+	//gi.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer3_f(edict_t *ent)
+{
+	ent->client->pers.playerID=3;
+	//gi.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer4_f(edict_t *ent)
+{
+	ent->client->pers.playerID=4;
+	//i.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer5_f(edict_t *ent)
+{
+	ent->client->pers.playerID=5;
+	//gi.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer6_f(edict_t *ent)
+{
+	ent->client->pers.playerID=6;
+	//gi.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer7_f(edict_t *ent)
+{
+	ent->client->pers.playerID=7;
+	//gi.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_InitPlayer8_f(edict_t *ent)
+{
+	ent->client->pers.playerID=8;
+	//gi.centerprintf(ent,"  PlayerID: %i",ent->client->pers.playerID);
+	
+}
+void Cmd_ShowPlayerInfo_f(edict_t *ent)
+{
+	
+	if(ent->client->pers.playerTeam=2 != 0)
+	{
+		if(   (ent->client->pers.playerID % 2 == 0)  )
+			ent->client->pers.playerTeam=2;
+		else
+			ent->client->pers.playerTeam=1;
+
+		//gi.centerprintf(ent,"PlayerID: %i",ent->client->pers.playerID);
+		gi.centerprintf(ent,"	  PlayerTeam: %i",ent->client->pers.playerTeam);
+	}
+	else
+		gi.centerprintf(ent,"INITIATE PLAYER");
+
+
+	
+	
+}
 
 
 
@@ -1044,6 +1113,24 @@ void ClientCommand (edict_t *ent)
 		Cmd_ThrowBall_f(ent);
 	else if (Q_stricmp(cmd, "catch") == 0)
 		Cmd_CatchBall_f(ent);
+	else if (Q_stricmp(cmd, "player1") == 0)
+		Cmd_InitPlayer1_f(ent);
+	else if (Q_stricmp(cmd, "player2") == 0)
+		Cmd_InitPlayer2_f(ent);
+	else if (Q_stricmp(cmd, "player3") == 0)
+		Cmd_InitPlayer3_f(ent);
+	else if (Q_stricmp(cmd, "player4") == 0)
+		Cmd_InitPlayer4_f(ent);
+	else if (Q_stricmp(cmd, "player5") == 0)
+		Cmd_InitPlayer5_f(ent);
+	else if (Q_stricmp(cmd, "player6") == 0)
+		Cmd_InitPlayer6_f(ent);
+	else if (Q_stricmp(cmd, "player7") == 0)
+		Cmd_InitPlayer7_f(ent);
+	else if (Q_stricmp(cmd, "player8") == 0)
+		Cmd_InitPlayer8_f(ent);
+	else if (Q_stricmp(cmd, "team") == 0)
+		Cmd_ShowPlayerInfo_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }
