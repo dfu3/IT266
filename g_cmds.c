@@ -924,6 +924,11 @@ void Cmd_ThrowBall_f(edict_t *ent)
 {
 	TO_REMOVE(ent->flags,FL_THROW_SOLD);
 	TO_REMOVE(ent->flags,FL_THROW_MUT);
+
+	//TO_SET(ent->s.effects,EF_PENT);
+	//TO_SET(ent->s.effects,EF_COLOR_SHELL);
+	//TO_SET(ent->s.renderfx,RF_GLOW | RF_FULLBRIGHT | RF_SHELL_RED);//<=========================
+
 }
 //------------------------------------------------
 
@@ -985,18 +990,23 @@ void Cmd_InitPlayer8_f(edict_t *ent)
 void Cmd_ShowPlayerInfo_f(edict_t *ent)
 {
 	
-	if(ent->client->pers.playerTeam=2 != 0)
+	if(ent->client->pers.playerID != 0)
 	{
 		if(   (ent->client->pers.playerID % 2 == 0)  )
+		{
+			ent->s.modelindex = gi.modelindex ("models/monsters/infantry/tris.md2");
 			ent->client->pers.playerTeam=2;
+		}
 		else
 			ent->client->pers.playerTeam=1;
 
 		//gi.centerprintf(ent,"PlayerID: %i",ent->client->pers.playerID);
-		gi.centerprintf(ent,"	  PlayerTeam: %i",ent->client->pers.playerTeam);
+		gi.centerprintf(ent," PlayerTeam: %i",ent->client->pers.playerTeam);
+
+		
 	}
 	else
-		gi.centerprintf(ent,"INITIATE PLAYER");
+		gi.centerprintf(ent,"MUST INITIATE PLAYER");
 
 
 	

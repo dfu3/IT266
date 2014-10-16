@@ -56,6 +56,7 @@
 #define FL_CATCHING				0x00040000
 #define FL_TAKE_STAMP			0x00080000
 #define FL_STAMP_BS				0x00100000
+#define FL_IS_OUT				0x00200000
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
 #define IS_SET(a,b) (a & b)

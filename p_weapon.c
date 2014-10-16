@@ -362,10 +362,12 @@ void Weapon_Generic (edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST,
 {
 	int		n;
 
-	if(ent->deadflag || ent->s.modelindex != 255) // VWep animations screw up corpses
+	/*
+	if(ent->deadflag || ent->s.modelindex != 255) // VWep animations screw up corpses----------------------------------------MODel
 	{
 		return;
 	}
+	*/
 
 	if (ent->client->weaponstate == WEAPON_DROPPING)
 	{
@@ -550,7 +552,7 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 	else
 		speed=1000;
 	
-	if(IS_SET(ent->flags,FL_MOON_JUMP) || IS_SET(ent->flags,FL_CATCHING) )//----------------will not throw if catching or moon jumping
+	if(IS_SET(ent->flags,FL_MOON_JUMP) || IS_SET(ent->flags,FL_CATCHING) || (IS_SET(ent->flags,FL_IS_OUT)) )//----------------will not throw if catching or moon jumping
 		return;
 	else
 		fire_grenade2 (ent, start, forward, damage, speed, timer, radius, held);
@@ -560,10 +562,12 @@ void weapon_grenade_fire (edict_t *ent, qboolean held)
 
 	ent->client->grenade_time = level.time + 1.0;
 
-	if(ent->deadflag || ent->s.modelindex != 255) // VWep animations screw up corpses
+	/*
+	if(ent->deadflag || ent->s.modelindex != 255) // VWep animations screw up corpses-----------------------------------------------MODel
 	{
 		return;
 	}
+	*/
 
 	if (ent->health <= 0)
 		return;

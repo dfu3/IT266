@@ -608,109 +608,7 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_cells		= 200;
 	client->pers.max_slugs		= 50;
 
-	/*
-	if( (client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0) ) 
-	{
-		client->pers.player1=1;
-		client->pers.player2=0;
-		client->pers.player3=0;
-		client->pers.player4=0;
-		client->pers.player5=0;
-		client->pers.player6=0;
-		client->pers.player7=0;
-		client->pers.player8=0;
-		
-	}
-	else if(	(client->pers.player1==1) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=1;
-		client->pers.player3=0;
-		client->pers.player4=0;
-		client->pers.player5=0;
-		client->pers.player6=0;
-		client->pers.player7=0;
-		client->pers.player8=0;
-
-	}
-	else if(	(client->pers.player1==0) && (client->pers.player2==1) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=0;
-		client->pers.player3=1;
-		client->pers.player4=0;
-		client->pers.player5=0;
-		client->pers.player6=0;
-		client->pers.player7=0;
-		client->pers.player8=0;
-
-	}
-	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==1) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=0;
-		client->pers.player3=0;
-		client->pers.player4=1;
-		client->pers.player5=0;
-		client->pers.player6=0;
-		client->pers.player7=0;
-		client->pers.player8=0;
-
-	}
-	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==1) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=0;
-		client->pers.player3=0;
-		client->pers.player4=0;
-		client->pers.player5=1;
-		client->pers.player6=0;
-		client->pers.player7=0;
-		client->pers.player8=0;
-
-	}
-	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==1) && (client->pers.player6==0) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=0;
-		client->pers.player3=0;
-		client->pers.player4=0;
-		client->pers.player5=0;
-		client->pers.player6=1;
-		client->pers.player7=0;
-		client->pers.player8=0;
-
-	}
-	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==1) && (client->pers.player7==0)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=0;
-		client->pers.player3=0;
-		client->pers.player4=0;
-		client->pers.player5=0;
-		client->pers.player6=0;
-		client->pers.player7=1;
-		client->pers.player8=0;
-
-	}
-	else if(	(client->pers.player1==0) && (client->pers.player2==0) && (client->pers.player3==0) && (client->pers.player4==0) && (client->pers.player5==0) && (client->pers.player6==0) && (client->pers.player7==1)	&& (client->pers.player8==0)	)
-	{
-		client->pers.player1=0;
-		client->pers.player2=0;
-		client->pers.player3=0;
-		client->pers.player4=0;
-		client->pers.player5=0;
-		client->pers.player6=0;
-		client->pers.player7=0;
-		client->pers.player8=1;
-
-	}
-	*/
-
-
-
-	//client->pers.playerID++;
-
+	
 	 
 
 	client->pers.connected = true;
@@ -722,6 +620,8 @@ void InitClientResp (gclient_t *client)
 	memset (&client->resp, 0, sizeof(client->resp));
 	client->resp.enterframe = level.framenum;
 	client->resp.coop_respawn = client->pers;
+
+	
 }
 
 /*
@@ -1343,6 +1243,9 @@ void PutClientInServer (edict_t *ent)
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
 	
+	//TO_SET(ent->s.effects,EF_PENT);
+	//TO_SET(ent->s.renderfx,RF_GLOW | RF_FULLBRIGHT | RF_SHELL_RED);
+
 }
 
 /*
@@ -1857,59 +1760,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		
 	}
 
-	/*
 	
-	if(IS_SET(ent->flags,FL_TAKE_STAMP))
-	{
-		time(&now);
-		//seconds = 0;
-		
-		while (seconds < 1000000000)
-		{
-			seconds++;
-		}
-
-		
-		TO_REMOVE(ent->flags,FL_TAKE_STAMP);
-		//TO_REMOVE(ent->flags,FL_CATCHING);
-	}
-	
-
-	seconds = 5;
-	
-	
-	if(IS_SET(ent->flags,FL_STAMP_BS))
-	{
-		//gi.centerprintf((difftime(time(&later),now)));
-
-		
-		if ((difftime(time(&later),now)) <= seconds)
-		{
-			TO_SET(ent->flags,FL_CATCHING);
-			TO_SET(ent->flags,FL_STAMP_BS);
-			gi.centerprintf(ent,"catch on");
-		}
-		if ((difftime(time(&later),now)) > seconds)
-		{
-			TO_REMOVE(ent->flags,FL_CATCHING);
-		    TO_REMOVE(ent->flags,FL_STAMP_BS);
-			gi.centerprintf(ent,"catch off");
-		}
-		
-	}
-	*/
-	
-	//-------------------------------------------------------------
-	/*
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player1);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player2);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player3);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player4);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player5);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player6);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player7);
-	gi.bprintf(PRINT_HIGH,"  PlayerID: %i",client->pers.player8);
-	*/
 	
 	if(IS_SET(ent->flags,FL_STAMP_BS))
 	{
@@ -1918,12 +1769,12 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		gi.centerprintf(ent,"catch set");
 	}
 	
-	else if(client->timer>=75)
+	else if( (client->timer>=100) )
 	{
-		//timer=0;
+		gi.centerprintf(ent,"catch off");
 		TO_REMOVE(ent->flags,FL_CATCHING);
 		TO_REMOVE(ent->flags,FL_TAKE_STAMP);
-		gi.centerprintf(ent,"catch off");
+		client->timer=0;
 	}
 	else if (IS_SET(ent->flags,FL_TAKE_STAMP))
 	{
@@ -1931,6 +1782,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		TO_SET(ent->flags,FL_CATCHING);
 		gi.centerprintf(ent,"catch on");
 	}
+
+	//TO_SET(ent->s.effects,EF_PENT);
+	//TO_SET(ent->s.effects,EF_COLOR_SHELL);
+	//TO_SET(ent->s.renderfx,RF_GLOW | RF_FULLBRIGHT | RF_SHELL_RED);
 	
 	//---------------------------------------------------------------
 	

@@ -10,6 +10,64 @@ a non-instant attack weapon.  It checks to see if a
 monster's dodge function should be called.
 =================
 */
+
+#define MAX_PLAYERS		2 
+
+
+int team1[MAX_PLAYERS/2]={0};//--------------------------------------------------------------------------------------------------arrays to track "out" players
+int team2[MAX_PLAYERS/2]={0};
+
+void AddToQue(int team[], int playerID)
+{
+	int i;
+
+	for(i=0; i< MAX_PLAYERS/2; i++)
+		if( team[i]==0)
+		{
+			team[i]=playerID;
+			break;
+		}
+}
+
+int RemFromQue(int team[])
+{
+	int i;
+	int backIn=team[0];
+
+	for(i=0; i<(MAX_PLAYERS/2)-1; i++)
+		team[i]=team[i++];
+	team[(MAX_PLAYERS/2)-1]=0;
+
+	return backIn;
+}
+
+int ArrFull()
+{
+	int i;
+	int full=0;
+	for(i=0; i<MAX_PLAYERS/2; i++)
+		if( !team1[i]==0)
+			full=1;
+		else
+		{
+			full=0;
+			break;
+		}
+
+	for(i=0; i<MAX_PLAYERS/2; i++)
+		if( !team2[i]==0)
+			full=2;
+		else
+		{
+			full=0;
+			break;
+		}
+
+	return full;
+}
+
+
+
 static void check_dodge (edict_t *self, vec3_t start, vec3_t dir, int speed)
 {
 	vec3_t	end;
@@ -458,6 +516,9 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 	vec3_t origin;
 	int mod;
 	gitem_t		*item;
+	int backIn;
+	int i;
+	edict_t	*emptyEnt;
 		
 
 	if (other == ent->owner) //------------------------------------------------------------------testing on myself	CHANGE LATER!!!!!!!!!!!-OFF
@@ -500,38 +561,138 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
 
 	
-	if ( (ent->enemy) && (ent->hitMapFirst < 1) )
+	if ( (ent->enemy) && (ent->hitMapFirst < 1) && ( !IS_SET(ent->enemy->flags,FL_IS_OUT) ) && (ent->enemy->client->pers.playerTeam != ent->owner->client->pers.playerTeam ) )
 	{
-		float	points;
-		vec3_t	v;
-		vec3_t	dir;
 		
-
-		VectorAdd (ent->enemy->mins, ent->enemy->maxs, v);
-		VectorMA (ent->enemy->s.origin, 0.5, v, v);
-		VectorSubtract (ent->s.origin, v, v);
-		points = ent->dmg - 0.5 * VectorLength (v);
-		VectorSubtract (ent->enemy->s.origin, ent->s.origin, dir);
-		
-		mod=MOD_HIT;
 
 		if(IS_SET(ent->enemy->flags,FL_CATCHING))
 		{
 
+
+			//gi.centerprintf(ent->owner," Team: %i",ent->client->pers.playerTeam);
+			
+
+			
 			item = FindItem("Grenades");
 			ent->enemy->client->pers.selected_item = ITEM_INDEX(item);
 			ent->enemy->client->pers.inventory[ent->enemy->client->pers.selected_item] = 1;
-			T_Damage (ent->owner, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points*10, (int)points, 0, mod);
-			G_FreeEdict (ent);//------------------------------------------------------------------------frees ball after adding new one to inventory
-		}
 			
-		else
-			T_Damage (ent->enemy, ent, ent->owner, dir, ent->s.origin, vec3_origin, (int)points*10, (int)points, 0, mod);
-	
-	}
+			gi.centerprintf(ent->owner,"YOU'RE OUT!");
+			TO_SET(ent->owner->svflags,SVF_NOCLIENT);//----------------------try putting this at end of IF 
+			TO_SET(ent->owner->flags,FL_IS_OUT);
+				
+			if(ent->owner->client->pers.playerTeam == 2) 
+				AddToQue(team2,ent->owner->client->pers.playerID);
+				
+			else
+				AddToQue(team1,ent->owner->client->pers.playerID);
+				
+			
 
-	//Grenade_Explode (ent);
+
+
+			if(ArrFull() !=0)
+			{
+				
+				if(ArrFull()==1)
+					gi.centerprintf(ent->owner,"team2 wins");
+				else									
+					gi.centerprintf(ent->owner,"team1 wins");
+				
+
+				//game.clients[0].resp.score=1;
+				ent->owner->client->resp.score=1;
+
+				//gi.FreeTags (TAG_LEVEL);
+				//gi.FreeTags (TAG_GAME);
+			}
+	
+			
+
+
+			if(ent->enemy->client->pers.playerTeam == 2) 
+				backIn=RemFromQue(team2);
+			else
+				backIn=RemFromQue(team1);
+
+			
+			if(backIn!=0)
+			{
+				for(i=0; i<game.maxclients-1; i++)
+				{
+
+					emptyEnt=&g_edicts[i+1];
+
+					if(!emptyEnt->inuse || !emptyEnt->client)
+						continue;
+
+					if( (emptyEnt->client->pers.playerID==backIn) )  //&& (emptyEnt != ent->enemy) )
+					{
+						//emptyEnt->movetype=MOVETYPE_WALK;
+						gi.centerprintf(emptyEnt,"%i IS BACK IN",emptyEnt->client->pers.playerID);
+						TO_REMOVE(emptyEnt->svflags,SVF_NOCLIENT);
+						TO_REMOVE(emptyEnt->flags,FL_IS_OUT);
+	
+						break;
+					}
+				}
+
+				/*
+				if(ent->owner->client->pers.playerTeam == 2) 
+					gi.centerprintf(ent->owner," end of touch/catching: %i, %i, %i, %i",team2[0], team2[1], team2[2], team2[3]);
+				else
+					gi.centerprintf(ent->owner," end of touch/catching: %i, %i, %i, %i",team1[0], team1[1], team1[2], team1[3]);
+				*/
+			}
+			
+			
+
+			G_FreeEdict (ent);//------------------------------------------------------------------------frees ball after adding new one to inventory
+	    }  	
+		else
+		{
+			if( !IS_SET(ent->enemy->flags,FL_IS_OUT) )
+			{
+				//ent->enemy->movetype=MOVETYPE_NOCLIP;
+				gi.centerprintf(ent->enemy,"YOU'RE OUT!");
+				TO_SET(ent->enemy->svflags,SVF_NOCLIENT);
+				TO_SET(ent->enemy->flags,FL_IS_OUT);
+				//ent->enemy->s.modelindex = gi.modelindex ("models/items/ammo/grenades/medium/tris.md2");
+
+			
+				if(ent->enemy->client->pers.playerTeam == 2) 
+					AddToQue(team2,ent->enemy->client->pers.playerID);
+				else
+					AddToQue(team1,ent->enemy->client->pers.playerID);
+
+
+
+				if(ArrFull() !=0)
+				{
+					
+					if(ArrFull()==1)
+						gi.centerprintf(ent->owner,"team2 wins");
+					else									
+						gi.centerprintf(ent->owner,"team1 wins");
+					
+
+					//game.clients[0].resp.score=1;
+					ent->owner->client->resp.score=1;
+
+					//gi.FreeTags (TAG_LEVEL);
+					//gi.FreeTags (TAG_GAME);
+                }
+
+			}
+			else
+				gi.centerprintf(ent->owner,"player already out");
+		}
+
+	}
 }
+	
+
+	
 
 void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius)
 {
@@ -693,7 +854,7 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
 	edict_t	*rocket;
-
+	//rocket->s.effects |= EF_COLOR_SHELL;
 	/*
 
 	rocket = G_Spawn();
