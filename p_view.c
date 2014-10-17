@@ -76,8 +76,8 @@ void P_DamageFeedback (edict_t *player)
 
 	// start a pain animation if still in the player model
 
-	
-	if (client->anim_priority < ANIM_PAIN && player->s.modelindex == 255)//------------------------------------MODel
+	/*
+	if (client->anim_priority < ANIM_PAIN )//&& player->s.modelindex == 255)//------------------------------------MODel
 	{
 		static int		i;
 
@@ -107,6 +107,7 @@ void P_DamageFeedback (edict_t *player)
 			}
 		}
 	}
+	*/
 	
 
 	realcount = count;

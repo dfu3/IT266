@@ -169,7 +169,7 @@ void ChangeWeapon (edict_t *ent)
 	ent->client->newweapon = NULL;
 	ent->client->machinegun_shots = 0;
 
-	// set visible model
+	/*
 	if (ent->s.modelindex == 255) {
 		if (ent->client->pers.weapon)
 			i = ((ent->client->pers.weapon->weapmodel & 0xff) << 8);
@@ -177,6 +177,7 @@ void ChangeWeapon (edict_t *ent)
 			i = 0;
 		ent->s.skinnum = (ent - g_edicts - 1) | i;
 	}
+	*/
 
 	if (ent->client->pers.weapon && ent->client->pers.weapon->ammo)
 		ent->client->ammo_index = ITEM_INDEX(FindItem(ent->client->pers.weapon->ammo));

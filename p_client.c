@@ -1610,10 +1610,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		if (ent->movetype == MOVETYPE_NOCLIP)
 			client->ps.pmove.pm_type = PM_SPECTATOR;
-		else if (ent->s.modelindex != 255)
-			client->ps.pmove.pm_type = PM_GIB;
-		else if (ent->deadflag)
-			client->ps.pmove.pm_type = PM_DEAD;
+		//else if (ent->s.modelindex != 255)
+			//client->ps.pmove.pm_type = PM_GIB;
+		//else if (ent->deadflag)                   ----------------------------------------MODel
+			//client->ps.pmove.pm_type = PM_DEAD;
 		else
 			client->ps.pmove.pm_type = PM_NORMAL;
 

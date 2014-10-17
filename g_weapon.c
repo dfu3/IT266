@@ -11,7 +11,7 @@ monster's dodge function should be called.
 =================
 */
 
-#define MAX_PLAYERS		2 
+#define MAX_PLAYERS		4 
 
 
 int team1[MAX_PLAYERS/2]={0};//--------------------------------------------------------------------------------------------------arrays to track "out" players
@@ -44,26 +44,29 @@ int RemFromQue(int team[])
 int ArrFull()
 {
 	int i;
-	int full=0;
+	int full1;
+	int full2;
+
+
 	for(i=0; i<MAX_PLAYERS/2; i++)
 		if( !team1[i]==0)
-			full=1;
+			full1=1;
 		else
 		{
-			full=0;
+			full1=-1;
 			break;
 		}
 
 	for(i=0; i<MAX_PLAYERS/2; i++)
 		if( !team2[i]==0)
-			full=2;
+			full2=2;
 		else
 		{
-			full=0;
+			full2=-1;
 			break;
 		}
-
-	return full;
+	if(full1 != -1) return full1;
+	return full2;
 }
 
 
@@ -519,7 +522,9 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 	int backIn;
 	int i;
 	edict_t	*emptyEnt;
-		
+	int fullArr;
+	int outCount1=0;
+	int outCount2=0;
 
 	if (other == ent->owner) //------------------------------------------------------------------testing on myself	CHANGE LATER!!!!!!!!!!!-OFF
 		return;
@@ -568,48 +573,63 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 		if(IS_SET(ent->enemy->flags,FL_CATCHING))
 		{
 
-
-			//gi.centerprintf(ent->owner," Team: %i",ent->client->pers.playerTeam);
-			
-
-			
 			item = FindItem("Grenades");
 			ent->enemy->client->pers.selected_item = ITEM_INDEX(item);
 			ent->enemy->client->pers.inventory[ent->enemy->client->pers.selected_item] = 1;
 			
 			gi.centerprintf(ent->owner,"YOU'RE OUT!");
-			TO_SET(ent->owner->svflags,SVF_NOCLIENT);//----------------------try putting this at end of IF 
+			TO_SET(ent->owner->svflags,SVF_NOCLIENT); 
 			TO_SET(ent->owner->flags,FL_IS_OUT);
 				
 			if(ent->owner->client->pers.playerTeam == 2) 
 				AddToQue(team2,ent->owner->client->pers.playerID);
 				
-			else
+			else if(ent->owner->client->pers.playerTeam == 1) 
 				AddToQue(team1,ent->owner->client->pers.playerID);
 				
-			
 
+			for(i=0; i < game.maxclients; i++)
+				{
 
+					emptyEnt=&g_edicts[i];
 
-			if(ArrFull() !=0)
-			{
+					if(!emptyEnt->inuse || !emptyEnt->client)
+						continue;
+
+					//gi.centerprintf(emptyEnt," emptyEnt ID: %i",emptyEnt->client->pers.playerID);
+
+					if( (emptyEnt->client->pers.playerTeam==1) )  
+					{
+						//gi.centerprintf(emptyEnt," emptyEnt ID: %i",emptyEnt->client->pers.playerID);
+
+						if(IS_SET(emptyEnt->flags,FL_IS_OUT))
+							outCount1++;
+						
+					}
+					else if( (emptyEnt->client->pers.playerTeam==2) )   
+					{
+						//gi.centerprintf(emptyEnt," emptyEnt ID: %i",emptyEnt->client->pers.playerID);
+
+						if(IS_SET(emptyEnt->flags,FL_IS_OUT))
+							outCount2++;
+					}
+				}
+
+				//gi.centerprintf(ent->owner," COUNT1: %i",outCount1);
+				//gi.centerprintf(ent->owner," COUNT2: %i",outCount2);
 				
-				if(ArrFull()==1)
+				
+				if(outCount1 == MAX_PLAYERS/2)
+				{
 					gi.centerprintf(ent->owner,"team2 wins");
-				else									
+					ent->owner->client->resp.score=1;
+				}
+				else if(outCount2 == MAX_PLAYERS/2)
+				{
 					gi.centerprintf(ent->owner,"team1 wins");
-				
-
-				//game.clients[0].resp.score=1;
-				ent->owner->client->resp.score=1;
-
-				//gi.FreeTags (TAG_LEVEL);
-				//gi.FreeTags (TAG_GAME);
-			}
-	
+					ent->owner->client->resp.score=1;
+				}
 			
-
-
 			if(ent->enemy->client->pers.playerTeam == 2) 
 				backIn=RemFromQue(team2);
 			else
@@ -618,17 +638,16 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 			
 			if(backIn!=0)
 			{
-				for(i=0; i<game.maxclients-1; i++)
+				for(i=0; i<game.maxclients; i++)
 				{
 
-					emptyEnt=&g_edicts[i+1];
+					emptyEnt=&g_edicts[i];
 
 					if(!emptyEnt->inuse || !emptyEnt->client)
 						continue;
 
-					if( (emptyEnt->client->pers.playerID==backIn) )  //&& (emptyEnt != ent->enemy) )
+					if( (emptyEnt->client->pers.playerID==backIn) ) 
 					{
-						//emptyEnt->movetype=MOVETYPE_WALK;
 						gi.centerprintf(emptyEnt,"%i IS BACK IN",emptyEnt->client->pers.playerID);
 						TO_REMOVE(emptyEnt->svflags,SVF_NOCLIENT);
 						TO_REMOVE(emptyEnt->flags,FL_IS_OUT);
@@ -637,12 +656,6 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 					}
 				}
 
-				/*
-				if(ent->owner->client->pers.playerTeam == 2) 
-					gi.centerprintf(ent->owner," end of touch/catching: %i, %i, %i, %i",team2[0], team2[1], team2[2], team2[3]);
-				else
-					gi.centerprintf(ent->owner," end of touch/catching: %i, %i, %i, %i",team1[0], team1[1], team1[2], team1[3]);
-				*/
 			}
 			
 			
@@ -653,35 +666,64 @@ static void Grenade_Touch (edict_t *ent, edict_t *other, cplane_t *plane, csurfa
 		{
 			if( !IS_SET(ent->enemy->flags,FL_IS_OUT) )
 			{
-				//ent->enemy->movetype=MOVETYPE_NOCLIP;
+				
 				gi.centerprintf(ent->enemy,"YOU'RE OUT!");
 				TO_SET(ent->enemy->svflags,SVF_NOCLIENT);
 				TO_SET(ent->enemy->flags,FL_IS_OUT);
-				//ent->enemy->s.modelindex = gi.modelindex ("models/items/ammo/grenades/medium/tris.md2");
-
+				
+				
 			
 				if(ent->enemy->client->pers.playerTeam == 2) 
 					AddToQue(team2,ent->enemy->client->pers.playerID);
 				else
 					AddToQue(team1,ent->enemy->client->pers.playerID);
 
-
-
-				if(ArrFull() !=0)
+			
+				for(i=0; i < game.maxclients; i++)
 				{
-					
-					if(ArrFull()==1)
-						gi.centerprintf(ent->owner,"team2 wins");
-					else									
-						gi.centerprintf(ent->owner,"team1 wins");
-					
 
-					//game.clients[0].resp.score=1;
+					emptyEnt=&g_edicts[i];
+
+					if(!emptyEnt->inuse || !emptyEnt->client)
+						continue;
+
+					//gi.centerprintf(emptyEnt," emptyEnt ID: %i",emptyEnt->client->pers.playerID);
+
+					if( (emptyEnt->client->pers.playerTeam==1) )  
+					{
+						//gi.centerprintf(emptyEnt," emptyEnt ID: %i",emptyEnt->client->pers.playerID);
+
+						if(IS_SET(emptyEnt->flags,FL_IS_OUT))
+							outCount1++;
+						
+					}
+					else if( (emptyEnt->client->pers.playerTeam==2) )   
+					{
+						//gi.centerprintf(emptyEnt," emptyEnt ID: %i",emptyEnt->client->pers.playerID);
+
+						if(IS_SET(emptyEnt->flags,FL_IS_OUT))
+							outCount2++;
+					}
+				}
+
+				//gi.centerprintf(ent->owner," COUNT1: %i",outCount1);
+				//gi.centerprintf(ent->owner," COUNT2: %i",outCount2);
+				//gi.centerprintf(ent->owner," Arr1: %i", team1[0]);
+				//gi.centerprintf(ent->owner," Arr2: %i", team2[0]);
+
+				
+				if(outCount1 == MAX_PLAYERS/2)
+				{
+					gi.centerprintf(ent->owner,"team2 wins");
 					ent->owner->client->resp.score=1;
+				}
+				else if(outCount2 == MAX_PLAYERS/2)
+				{
+					gi.centerprintf(ent->owner,"team1 wins");
+					ent->owner->client->resp.score=1;
+				}
 
-					//gi.FreeTags (TAG_LEVEL);
-					//gi.FreeTags (TAG_GAME);
-                }
+				//TO_SET(ent->enemy->svflags,SVF_NOCLIENT);
 
 			}
 			else

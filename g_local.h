@@ -59,9 +59,9 @@
 #define FL_IS_OUT				0x00200000
 #define FL_RESPAWN				0x80000000	// used for item respawning
 
-#define IS_SET(a,b) (a & b)
-#define TO_SET(a,b) (a |= b)
-#define TO_REMOVE(a,b) (a &= ~b)
+#define IS_SET(a,b) ((a) & (b))
+#define TO_SET(a,b) ((a) |= (b))
+#define TO_REMOVE(a,b) ((a) &= ~(b))
 
 #define	FRAMETIME		0.1
 

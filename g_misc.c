@@ -99,13 +99,14 @@ void gib_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf
 		AngleVectors (normal_angles, NULL, right, NULL);
 		vectoangles (right, self->s.angles);
 
-		
+		/*
 		if (self->s.modelindex == sm_meat_index)//--------------------------------------------------------------------------------MODel
 		{
 			self->s.frame++;
 			self->think = gib_think;
 			self->nextthink = level.time + FRAMETIME;
 		}
+		*/
 		
 	}
 }
