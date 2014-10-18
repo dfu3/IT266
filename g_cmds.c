@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+/** Did you mean to #include "time.h" here or #include <time.h>? -GJB7 */
 #include "time.h"
 
 
@@ -939,6 +940,8 @@ void Cmd_CatchBall_f(edict_t *ent)
 	TO_SET(ent->flags,FL_STAMP_BS);
 }
 //------------------------------------------------
+
+/** You could have gotten away with having one function, and passing in the player ID as a parameter. This would avoid having a bunch of functions that essentially do the same thing, but have slight differences. -GJB7 */
 void Cmd_InitPlayer1_f(edict_t *ent)
 {
 	ent->client->pers.playerID=1;
