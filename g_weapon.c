@@ -22,12 +22,15 @@ void AddToQue(int team[], int playerID)
 	int i;
 
 	/** I recommend you always use curly braces around the body of a loop or conditional or anything. This will help guard against some nasty issues where you add more lines that you want in the body of, say, a loop, but since you're not using curly braces, it's not going to behave as you'd expect it to. -GJB7 */
+	//dfu3: fair enough 
 	for(i=0; i< MAX_PLAYERS/2; i++)
+	{
 		if( team[i]==0)
 		{
 			team[i]=playerID;
 			break;
 		}
+	}
 }
 
 int RemFromQue(int team[])
@@ -36,8 +39,11 @@ int RemFromQue(int team[])
 	int backIn=team[0];
 	
 	/** Curly braces. -GJB7 */
+	//dfu3: mhmmm
 	for(i=0; i<(MAX_PLAYERS/2)-1; i++)
+	{
 		team[i]=team[i++];
+	}
 	team[(MAX_PLAYERS/2)-1]=0;
 
 	return backIn;
@@ -50,7 +56,9 @@ int ArrFull()
 	int full2;
 
 	/** Curly braces. -GJB7 */
+	//dfu3: got it
 	for(i=0; i<MAX_PLAYERS/2; i++)
+	{
 		if( !team1[i]==0)
 			full1=1;
 		else
@@ -58,8 +66,10 @@ int ArrFull()
 			full1=-1;
 			break;
 		}
+	}
 
 	for(i=0; i<MAX_PLAYERS/2; i++)
+	{
 		if( !team2[i]==0)
 			full2=2;
 		else
@@ -67,6 +77,8 @@ int ArrFull()
 			full2=-1;
 			break;
 		}
+	}
+
 	if(full1 != -1) return full1;
 	return full2;
 }

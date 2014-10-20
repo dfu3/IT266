@@ -1,7 +1,7 @@
 #include "g_local.h"
 #include "m_player.h"
 /** Did you mean to #include "time.h" here or #include <time.h>? -GJB7 */
-#include "time.h"
+//dfu3: i actually decided not to use the library i just forgot to delete the #include ill take it off
 
 
 char *ClientTeam (edict_t *ent)
@@ -942,6 +942,7 @@ void Cmd_CatchBall_f(edict_t *ent)
 //------------------------------------------------
 
 /** You could have gotten away with having one function, and passing in the player ID as a parameter. This would avoid having a bunch of functions that essentially do the same thing, but have slight differences. -GJB7 */
+//dfu3: i thought about that when i began this process but i found it was easier to have each initialization of playerID to be a seperate command for the player to use
 void Cmd_InitPlayer1_f(edict_t *ent)
 {
 	ent->client->pers.playerID=1;
